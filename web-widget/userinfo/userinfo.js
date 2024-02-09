@@ -70,6 +70,7 @@ var main_attrs_labels = [ [
 
     'telephoneNumber: Téléphone fixe',
     'supannAutreTelephone: Tél secondaire',
+    'mobile: Tél mobile',
     'facsimileTelephoneNumber: Fax',
 
     'labeledURI: Page personnelle',
@@ -113,7 +114,6 @@ var main_attrs_labels = [ [
     'supannMailPerso: Courriel personnel',
     'mailForwardingAddress: Messagerie',
 
-    'mobile: Tél mobile',
     'pager: Tél mobile',
     'Photo: Photo',
 ],
