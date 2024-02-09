@@ -677,6 +677,12 @@ function supannEtuInscriptionAll($supannEtuInscription) {
   if (@$r['regimeinsc']) {
     $r['regimeinsc'] = $GLOBALS['supannEtuRegimeInscription'][$r['regimeinsc']];
   }
+  if (@$r['sectdisc']) {
+    $r['sectdisc'] = $GLOBALS['supannEtuSecteurDisciplinaire'][$r['sectdisc']];
+  }  
+  if (@$r['diplome']) {
+    $r['diplome'] = $GLOBALS['supannEtuDiplome'][$r['diplome']];
+  }  
   return $r;
 }
 

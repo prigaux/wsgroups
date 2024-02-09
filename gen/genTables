@@ -21,6 +21,8 @@ $etablissements = getLdapInfoMultiFilters($ETABLISSEMENT_TABLE_DN, array("(&(up1
 $supannCodesPopulation = getLdapInfoMultiFilters($BASE_DN, array("(up1TableName=supannCodePopulation)"), [ "up1TableKey" => "key", "displayName" => "name" ], "key");
 
 $supannEtuRegimeInscription = getLdapInfoMultiFilters("ou=supannEtuRegimeInscription,ou=tables,$BASE_DN", array("(up1TableKey=*)"), [ "up1TableKey" => "key", "displayName" => "name" ], "key");
+$supannEtuSecteurDisciplinaire = getLdapInfoMultiFilters("ou=supannEtuSecteurDisciplinaire,ou=tables,$BASE_DN", array("(up1TableKey=*)"), [ "up1TableKey" => "key", "displayName" => "name" ], "key");
+$supannEtuDiplome = getLdapInfoMultiFilters("ou=supannEtuDiplome,ou=tables,$BASE_DN", array("(up1TableKey=*)"), [ "up1TableKey" => "key", "displayName" => "name" ], "key");
 
 $fh = fopen($output_file, "w");
 if (!$fh) exit("failed to open output file $output_file");
@@ -32,6 +34,8 @@ gen($fh,
 	  'etablissementKeyToShortname' => $etablissements,
 	  'supannCodePopulationToShortname' => $supannCodesPopulation,
 	  'supannEtuRegimeInscription' => $supannEtuRegimeInscription,
+	  'supannEtuSecteurDisciplinaire' => $supannEtuSecteurDisciplinaire,
+	  'supannEtuDiplome' => $supannEtuDiplome,
     ),
     array('descriptionToActivityKey' => $activitesUP1)
 );
