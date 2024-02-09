@@ -25,6 +25,7 @@ global $employeeTypes; $employeeTypes = [
     "Associé mcf" => [ "weight" => "06", "name-gender-f" => "Associée mcf" ],
 
     "Contractuel chercheur lru" => [ "weight" => "07", "name-gender-f" => "Contractuelle chercheuse lru" ],
+    "Contractuel enseignant chercheur lru" => [ "weight" => "07", "name" => "Enseignant-Chercheur contractuel", "name-gender-f" => "Enseignante-Chercheure contractuelle" ],
 
     "Ater" => [ "weight" => "08" ],
     "Ater mi-temps" => [ "weight" => "08", "name" => "Ater" ],
