@@ -675,12 +675,7 @@ function supannEtuInscriptionAll($supannEtuInscription) {
     $r['typedip'] = $to_name[removePrefix($r['typedip'], '{SISE}')];
   }
   if (@$r['regimeinsc']) {
-    // http://infocentre.pleiade.education.fr/bcn/workspace/viewTable/n/N_REGIME_INSCRIPTION
-    $to_name = array('10' => 'Formation initiale',
-		     '11' => 'Reprise études',
-		     '12' => 'Formation initiale apprentissage', 
-		     '21' => 'Formation continue');
-    $r['regimeinsc'] = $to_name[removePrefix($r['regimeinsc'], '{SISE}')];
+    $r['regimeinsc'] = $GLOBALS['supannEtuRegimeInscription'][$r['regimeinsc']];
   }
   return $r;
 }
