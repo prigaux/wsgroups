@@ -1265,6 +1265,9 @@ const app = Vue.createApp({
     methods: {
         useHashParam: function () {
             var value = document.location.hash && document.location.hash.replace(/^#/, '');
+            value = value.replace(/[&?]ticket=.*/, '')
+            value = value.replace(/[&?]auth_checked/, '')
+            location.hash = value
             if (value && (!this.currentUser || this.currentUser.value != value)) {
                 this.currentUser = { label: value, value: value };
             }
@@ -1359,4 +1362,17 @@ app.component('Important', {
     </span>`,
 })
 
+$.ajax({
+    url: baseURL + "/login?CAS=true",
+    dataType: "jsonp",
+    crossDomain: true, // needed if url is CAS-ified or on a different host than application using autocompleteUser
+    success: function (data) {
+        if (!data.USER) {
+            console.log("wsgroups autologin failed, forcing a redirect to", data.LOGIN_URL)
+            document.location = data.LOGIN_URL + '?service=' + encodeURIComponent(document.location.href)
+        }
+    },
+});
+
 app.mount('#annuaire');
+
