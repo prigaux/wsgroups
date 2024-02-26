@@ -549,7 +549,7 @@ function format_supannEtuInscriptionAll(all, fInfo) {
 	$.each(e, function (k,v) { 
 	    if (k !== 'etape') title.push(k + ": " + v);
 	});
-	return $("<span>", { title: title.join(" ,  ") }).text(text); 
+	return $("<span>", { title: title.join("\n") }).text(text); 
     };
     if (curr.length)
 	fInfo['supannEtuInscription-all'] = spanFromList($.map(curr, format_it), "<br>");
@@ -624,7 +624,7 @@ function compute_Person(info) {
     if (info.up1BirthDay && is_not_adult(info.up1BirthDay)) {
         Person.append(" " + important(civilite.match(/Mme|Mlle/) ? "MINEURE" : "MINEUR", "moins-de-15-ans"));
     }
-	Person.attr('title', 'Prénom : ' + info.givenName + (info.up1AltGivenName ? " (" + info.up1AltGivenName.join(' ') + ")" : '') + ", Nom : " + info.sn + ", Complet : " + info.cn);
+	Person.attr('title', 'Prénom : ' + info.givenName + (info.up1AltGivenName ? " (" + info.up1AltGivenName.join(' ') + ")" : '') + "\nNom : " + info.sn + "\nComplet : " + info.cn);
     return Person;
 }
 

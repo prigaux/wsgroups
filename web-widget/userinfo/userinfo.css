@@ -63,6 +63,7 @@ span[title], a[title] {
   left: 0;
   width: 50vw;
   z-index: 1;
+  white-space: pre;
 }
 @media screen and (max-device-width: 800px){
     .clickedTitle {
