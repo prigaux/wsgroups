@@ -5,6 +5,10 @@ $SEARCH_TIMELIMIT = 5; // seconds
 
 $CAS_HOST = 'cas.univ.fr';
 $CAS_CONTEXT = '/cas';
+if (($_GET["CAS"] ?? '') === 'MFA') {
+    $CAS_CONTEXT = '/otp';
+    session_name('PHPSESSID_MFA');
+}
 $CA_certificate_file = '/usr/local/etc/ssl/certs/ca.crt';
 
 $TRUSTED_IPS = array(

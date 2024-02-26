@@ -1,10 +1,10 @@
 "use strict";
 
 var baseURL = "https://wsgroups-test.univ-paris1.fr";
-var searchUserURL = baseURL + '/searchUserCAS';
+var searchUserURL = baseURL + '/searchUser?CAS=MFA';
 var getGroupURL = baseURL + '/getGroup';
 var lastLoginsUrl = baseURL + '/userLastLogins';
-var moreInfoUrl = baseURL + '/userMoreInfo';
+var moreInfoUrl = baseURL + '/userMoreInfo?CAS=MFA';
 var helpUrl = 'https://dsiundoc.univ-paris1.fr/doku.php?id=refi:userinfo-web#HELP_ID';
 helpUrl = 'https://idp.univ-paris1.fr/idp/profile/Shibboleth/SSO?shire=https://dsiundoc.univ-paris1.fr/Shibboleth.sso/SAML/POST&target=' + escape(helpUrl) + '&providerId=https://dsiundoc.univ-paris1.fr';
 var impersonateUrl = 'https://ent-test.univ-paris1.fr/EsupUserApps/impersonate.html';
@@ -1363,7 +1363,7 @@ app.component('Important', {
 })
 
 $.ajax({
-    url: baseURL + "/login?CAS=true",
+    url: baseURL + "/login?CAS=MFA",
     dataType: "jsonp",
     crossDomain: true, // needed if url is CAS-ified or on a different host than application using autocompleteUser
     success: function (data) {
