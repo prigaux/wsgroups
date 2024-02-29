@@ -40,12 +40,24 @@ function seeAlso_filter($cn) {
   return "(seeAlso=cn=$cn,$GROUPS_DN)";
 }
 
+function GET_filter_group_cn() {
+    $cns = GET_or_NULL("filter_group_cn");
+    if (!$cns) return [];
+
+    return [ldapOr(array_map(function($s) { 
+        return "(cn=" . ldap_escape_string_allow_subInitial($s) . ")"; 
+    }, explode('|', $cns)))];
+}
+
 function GET_extra_group_filter_from_params() {
   require_once('lib/supannPerson.inc.php');
   $r = array(
        // default value
       'allStructures' => false,
-      'filters' => GET_filter_member_of_group(),
+      'filters' => array_merge(
+        GET_filter_member_of_group(),
+        GET_filter_group_cn(),
+      )
   );
   foreach (array("category") as $attr) {
     $in = GET_or_NULL("filter_$attr");

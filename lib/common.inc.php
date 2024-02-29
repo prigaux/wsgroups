@@ -344,6 +344,11 @@ function ldap_escape_string( $p_string ) {
   return $t_string;
 }
 
+function ldap_escape_string_allow_subInitial($s) {
+  $s_ = rtrim($s, '*');
+  return ldap_escape_string($s_) . ($s_ === $s ? '' : '*');
+}
+
 function mayRemap($map, $k) {
   return isset($map[$k]) ? $map[$k] : $k;
 }
