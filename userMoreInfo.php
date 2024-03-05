@@ -11,7 +11,7 @@ $need_level1 = [ 'auth', 'folder', 'mailbox' ];
 $wanted_level = array_diff(explode(",", $info), $need_level1) ? 2 : 1;
 
 forceCASAuthentication();
-if (loggedUserAllowedLevel() < $wanted_level) {
+if (GET_or_NULL('CAS') !== 'MFA' || loggedUserAllowedLevel() < $wanted_level) {
   header("HTTP/1.0 403 Forbidden");
   exit;
 }

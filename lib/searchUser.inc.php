@@ -21,12 +21,15 @@ $allowInvalidAccounts = GET_or_NULL("allowInvalidAccounts");
 $allowNoAffiliationAccounts = GET_or("allowNoAffiliationAccounts", $allowInvalidAccounts);
 $allowRoles = GET_or_NULL("allowRoles"); # allow searching non-people entries
 
-$allowExtendedInfo = $anonymous ? -1 : 0;
-if ((isset($showExtendedInfo) || isset($allowInvalidAccounts)) && (@$isTrustedIp || GET_uid())) {
-  $allowExtendedInfo = @$isTrustedIp ? 2 : loggedUserAllowedLevel();
+$extendedInfo = $allowExtendedInfo = $anonymous ? -1 : (@$isTrustedIp ? 2 : 0);
+if (isset($showExtendedInfo) && GET_uid()) {
+  if (GET_or_NULL('CAS') !== 'MFA') fatal("showExtendedInfo requires CAS=MFA");
+  $extendedInfo = $allowExtendedInfo = loggedUserAllowedLevel();
+}
+if (isset($allowInvalidAccounts) && GET_uid()) {    
+  $allowExtendedInfo = loggedUserAllowedLevel();
 }
 
-$extendedInfo = $allowExtendedInfo;
 if ($allowExtendedInfo >= 1) {
   if (is_numeric($showExtendedInfo)) {
       $extendedInfo = min($extendedInfo, $showExtendedInfo);
@@ -40,8 +43,6 @@ if ($allowExtendedInfo >= 1) {
 
 $restriction = GET_extra_people_filter_from_params();
 $wanted_attrs = people_attrs($attrs, $extendedInfo);
-
-if ($allowInvalidAccounts && $extendedInfo < 1) $allowInvalidAccounts = false;
 
 $attrRestrictions = attrRestrictions($extendedInfo);
 $attrRestrictions['allowRoles'] = $allowRoles;

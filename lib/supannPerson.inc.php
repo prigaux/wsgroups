@@ -322,9 +322,8 @@ function isPersonMatchingFilter($uid, $filter) {
 
 function loggedUserAllowedLevel() {
     global $LEVEL1_FILTER, $LEVEL2_FILTER;
-    return GET_or_NULL('CAS') !== 'MFA' ? 0 :
-        (isPersonMatchingFilter(GET_uid(), $LEVEL1_FILTER) ?
-        (isPersonMatchingFilter(GET_uid(), $LEVEL2_FILTER) ? 2 : 1) : 0);
+    return isPersonMatchingFilter(GET_uid(), $LEVEL1_FILTER) ?
+        (isPersonMatchingFilter(GET_uid(), $LEVEL2_FILTER) ? 2 : 1) : 0;
 }
 
 function allowListeRouge($allowExtendedInfo) {
