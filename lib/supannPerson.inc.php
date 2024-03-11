@@ -326,6 +326,12 @@ function loggedUserAllowedLevel() {
         (isPersonMatchingFilter(GET_uid(), $LEVEL2_FILTER) ? 2 : 1) : 0;
 }
 
+function loggedUserSearchAllowedLevel() {
+    global $LEVEL1_SEARCH_FILTER, $LEVEL2_FILTER;
+    return isPersonMatchingFilter(GET_uid(), $LEVEL1_SEARCH_FILTER) ?
+        (isPersonMatchingFilter(GET_uid(), $LEVEL2_FILTER) ? 2 : 1) : 0;
+}
+
 function allowListeRouge($allowExtendedInfo) {
     global $isTrustedIp;
     if ($allowExtendedInfo > 0 || @$isTrustedIp) {

@@ -21,16 +21,16 @@ $allowInvalidAccounts = GET_or_NULL("allowInvalidAccounts");
 $allowNoAffiliationAccounts = GET_or("allowNoAffiliationAccounts", $allowInvalidAccounts);
 $allowRoles = GET_or_NULL("allowRoles"); # allow searching non-people entries
 
-$extendedInfo = $allowExtendedInfo = $anonymous ? -1 : (@$isTrustedIp ? 2 : 0);
+$extendedInfo = $allowedSearchLevel = $allowExtendedInfo = $anonymous ? -1 : (@$isTrustedIp ? 2 : 0);
 if (isset($showExtendedInfo) && GET_uid()) {
   if (GET_or_NULL('CAS') !== 'MFA') fatal("showExtendedInfo requires CAS=MFA");
   $extendedInfo = $allowExtendedInfo = loggedUserAllowedLevel();
 }
 if (isset($allowInvalidAccounts) && GET_uid()) {    
-  $allowExtendedInfo = loggedUserAllowedLevel();
+  $allowedSearchLevel = loggedUserSearchAllowedLevel();
 }
 
-if ($allowExtendedInfo >= 1) {
+if ($allowExtendedInfo >= 1 || $allowedSearchLevel >= 1) {
   if (is_numeric($showExtendedInfo)) {
       $extendedInfo = min($extendedInfo, $showExtendedInfo);
   }

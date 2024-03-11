@@ -2,6 +2,7 @@
 
 $LEVEL1_FILTER = "(supannEntiteAffectation=XXXX*)";
 $LEVEL2_FILTER = "(supannEntiteAffectation=XXXXX)";
+$LEVEL1_SEARCH_FILTER = "(|(supannEntiteAffectation=YYYY)$LEVEL1_FILTER)";
 
 
 $LDAP_CONNECT = 
