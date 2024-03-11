@@ -289,19 +289,13 @@
 	});
   };
 
-  var transformRoleGeneriqueItems = function (roles, activites, searchedToken) {
-      $.each(roles, function ( i, item ) {
-        item.category = 'supannRoleGenerique';
+  var transformRoleGeneriqueItems = function (items, category, group, searchedToken) {
+      $.each(items, function ( i, item ) {
+        item.category = category;
+        item.group = group;
       });
-      $.each(activites, function ( i, item ) {
-        item.category = 'supannActivite';
-      });
-      var items = roles.concat(activites);
       items.sort(function (a, b) { return a.name.localeCompare(b.name) });
       transformItems(items, 'key', 'name', searchedToken);
-      $.each(items, function ( i, item ) {
-        item.group = 'Fonctions';
-      });
       return items;
   }
 
@@ -545,7 +539,10 @@ var myRenderGroupItem = function (navigate) {
 		    users = transformUserItems(users, 'uid', request.term);
 		    transformGroupItems(data.groups, 'key', request.term);
 
-            var roles = transformRoleGeneriqueItems(data.supannRoleGenerique || [], data.supannActivite || [], 'key', request.term);
+            var roles = 
+                transformRoleGeneriqueItems(data.supannRoleGenerique || [], 'supannRoleGenerique', 'Fonctions', request.term).concat(
+                transformRoleGeneriqueItems(data.supannActivite || [], 'supannActivite', 'Emplois', request.term)
+            )
             
             let warning = {}
             input.kraaden_autocomplete_installed.warning = warning
