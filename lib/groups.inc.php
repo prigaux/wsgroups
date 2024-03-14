@@ -320,6 +320,10 @@ function groupKeyToCategory($key) {
     if (preg_match('/^(structures|affiliation|diploma)-/', $key, $matches) ||
 	preg_match('/^groups-(gpelp|gpetp)\./', $key, $matches))
 	return $matches[1];
+    else if (preg_match('/^groups-employees[.](administration|pedagogy|library|research|doctoralSchool)[.]/', $key))
+	return 'groups_structures';
+    else if (startsWith($key, 'groups-employees.role.'))
+	return 'groups_role';
     else if (startsWith($key, 'groups-mati'))
 	return 'elp';
     else if (startsWith($key, 'groups-'))
