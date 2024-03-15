@@ -289,6 +289,7 @@
       $.each(items, function ( i, item ) {
       item.group = category2text[item.category || ""] || 'Autres types de groupes';
 	});
+    return sortByGroupCategory(items);
   };
 
   var transformRoleGeneriqueItems = function (items, category, group, searchedToken) {
@@ -453,8 +454,7 @@ var myRenderGroupItem = function (navigate) {
           response([ { wsError: true } ]);
 		},
 		success: function (data) {
-		    data = sortByGroupCategory(data);
-		    transformGroupItems(data, settings.wantedAttr, request.term);
+		    data = transformGroupItems(data, settings.wantedAttr, request.term);
 
           let warning = {}
           input.kraaden_autocomplete_installed.warning = warning
@@ -539,7 +539,7 @@ var myRenderGroupItem = function (navigate) {
 
                     $.each(users, function (i, item) { item.category = 'users'; });                    
 		    users = transformUserItems(users, 'uid', request.term);
-		    transformGroupItems(data.groups, 'key', request.term);
+		    var groups = transformGroupItems(data.groups, 'key', request.term);
 
             var roles = 
                 transformRoleGeneriqueItems(data.supannRoleGenerique || [], 'supannRoleGenerique', 'Fonctions', request.term).concat(
@@ -548,8 +548,8 @@ var myRenderGroupItem = function (navigate) {
             
             let warning = {}
             input.kraaden_autocomplete_installed.warning = warning
-                    var l = users.concat(roles, data.groups);
-		    if (users.length >= settings.maxRows || data.groups.length >= settings.maxRows) {
+                    var l = users.concat(roles, groups);
+		    if (users.length >= settings.maxRows || groups.length >= settings.maxRows) {
 			warning.partialResults = settings.maxRows;;
 		    } else if (request.term.length < settings.user_minLengthFullSearch) {
 			warning.partialResultsNoFullSearch = 1;
