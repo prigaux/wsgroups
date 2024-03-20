@@ -19,7 +19,7 @@ foreach (['supannRoleGenerique', 'supannActivite', 'eduPersonAffiliation'] as $t
   if (in_array($table, $kinds)) {
     $filters = ["(up1TableKey=*)"];
     if ($table === 'supannRoleGenerique') $filters[] = '(up1Flags={PRIO}*)'; // only "important" ones
-    if ($table === 'supannActivite') $filters[] = '(|(up1TableKey={UAI:0751717J:ACT}*)(up1TableKey={UAI:0751717J:RIFSEEP}*))'; // only "important" ones
+    if ($table === 'supannActivite') $filters[] = '(&(|(up1TableKey={UAI:0751717J:ACT}*)(up1TableKey={UAI:0751717J:RIFSEEP}*))(!(businessCategory=management)))'; // only "important" ones. NB : on ignore les RIFSEEP en doublon des roles (GLPI UP1#163275)
     if ($token) $filters[] = ldapOr(["(displayName=*$token*)", "(cn=*$token*)"]);    
     $filter = array_merge($token ? ["(up1TableKey=$token)"] : [], [ldapAnd($filters)]);
     $r[$table] = getLdapInfoMultiFilters("ou=$table,ou=tables,$BASE_DN", $filter, array('up1TableKey' => "key", "displayName" => "name"), "key", $maxRows === 1 ? 1 : 0);
