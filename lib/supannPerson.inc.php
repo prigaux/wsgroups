@@ -12,7 +12,7 @@ global $USER_KEY_FIELD, $USER_ALLOWED_ATTRS;
 $USER_KEY_FIELD = 'uid';
 $attrs_by_kind = [
   "MONO -1" => [
-    'uid', 'mail', 'displayName', 'cn', 'eduPersonPrimaryAffiliation', 
+    'uid', 'mail', 'supannAutreMail', 'displayName', 'cn', 'eduPersonPrimaryAffiliation', 
 	'postalAddress', 'eduPersonPrincipalName',
 	'sn', 'givenName',
     'supannEntiteAffectationPrincipale', 'supannEntiteAffectationPrincipale-all',

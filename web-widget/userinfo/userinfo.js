@@ -65,8 +65,8 @@ var main_attrs_labels = [ [
 ],
 [   
     'mail: Courriel',
-    'mailAlternateAddress: Courriel secondaire',
-    'supannAutreMail: Courriel secondaire',
+    'supannAutreMail: Autre courriel',
+    'mailAlternateAddress: Ancien courriel',
 
     'telephoneNumber: Téléphone fixe',
     'supannAutreTelephone: Tél secondaire',
