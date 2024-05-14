@@ -101,7 +101,7 @@ if (@$UP1_ROLES_DN) {
 
 function allowAttribute($user, $attrName, $allowExtendedInfo) {
     global $USER_ALLOWED_ATTRS;
-    if (in_array($attrName, ['employeeType', 'employeeType-all', 'departmentNumber'])) {  
+    if (in_array($attrName, ['departmentNumber'])) {  
         // employeeType is private for staff & student
         // departmentNumber is not interesting for staff & student
         if (in_array(@$user['eduPersonPrimaryAffiliation'], array('teacher', 'emeritus', 'researcher'))) return true;
@@ -400,6 +400,7 @@ function searchPeople($filter, $attrRestrictions, $wanted_attrs, $KEY_FIELD, $ma
       if (!@$attrRestrictions['allowMailForwardingAddress'])
 	  anonymizeUserMailForwardingAddress($user);
       if ($attrRestrictions['allowExtendedInfo'] < 1) userHandle_PersonnelEnActivitePonctuelle($user);
+      userHandleSpecialAttributeValues_pre($user, $attrRestrictions['allowExtendedInfo']);
       userAttributesKeyToText($user, $wanted_attrs, @$user['supannCivilite'], @$user['supannConsentement'] , $attrRestrictions['allowExtendedInfo']);
       userHandleSpecialAttributeValues($user, $attrRestrictions['allowExtendedInfo']);
       if (isset($user['up1Profile'])) {
@@ -571,6 +572,7 @@ function parse_up1Profile_one_raw($up1Profile) {
 function post_parse_up1Profile_one($r, $allowExtendedInfo, $wanted_attrs, $global_user) {
     if ($allowExtendedInfo < 1) userHandle_PersonnelEnActivitePonctuelle($r);
     userHandleSpecialAttributePrivacy($r, $allowExtendedInfo);
+    userHandleSpecialAttributeValues_pre($r, $allowExtendedInfo);
     userAttributesKeyToText($r, $wanted_attrs, 
             isset($r['supannCivilite']) ? $r['supannCivilite'] : $global_user['supannCivilite'], 
             isset($r['supannConsentement']) ? $r['supannConsentement'] : $global_user['supannConsentement'], 
@@ -783,6 +785,21 @@ function userHandleSpecialAttributeValues(&$user, $allowExtendedInfo) {
         if (isset($user['labeledURI'])) {
             $user['labeledURI'] = array_filter($user['labeledURI'], function ($uri) { return !contains($uri, ' {DEMANDE}'); });
         }
+    }
+}
+function userHandleSpecialAttributeValues_pre(&$user, $allowExtendedInfo) {
+    if ($allowExtendedInfo < 2) {
+        if (isset($user['employeeType'])) {  
+            // employeeType is private for staff & student
+            if (!in_array(@$user['eduPersonPrimaryAffiliation'], array('teacher', 'emeritus', 'researcher'))) {
+                // pour les multi-profils, on conserve les valeurs venant du profil teacher/emeritus/researcher
+                // comme on ne peut pas le savoir facilement, on conserve les valeurs importantes listées dans lib/employeeTypes.inc.php
+                require_once 'lib/employeeTypes.inc.php';
+                $user['employeeType'] = array_filter($user['employeeType'], function ($name) { 
+                    return isset($GLOBALS['employeeTypes'][$name]);
+                });
+            }
+        }    
     }
 }
 
