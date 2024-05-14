@@ -36,7 +36,6 @@ global $employeeTypes; $employeeTypes = [
     "Hébergé doctorant sans recherche" => [ "weight" => "09", "name-gender-f" => "Hébergée doctorante sans recherche" ],
 
     "Hébergé administratif catégorie a" => [ "weight" => "11", "name-gender-f" => "Hébergée administratif catégorie a" ],
-    "Agent contractuel" => [ "weight" => "11", "name-gender-f" => "Agent contractuelle" ],
 
     "Chargé d'enseignement" => [ "weight" => "12", "name-gender-f" => "Chargée d'enseignement" ],
 ];
