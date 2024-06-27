@@ -179,7 +179,7 @@ function people_filters($token, $restriction = [], $allowInvalidAccounts = false
         $l[] = '(supannRoleGenerique=*)'; // then less important people
         $l[] = ''; // then the rest
     } else if (preg_match('/(.*?)@(.*)/', $token, $matches)) {
-        $l[] = "(|(mail=$token)(&(uid=$matches[1])(mail=*@$matches[2])))";
+        $l[] = "(|(supannMailPerso=$token)(mail=$token)(&(uid=$matches[1])(mail=*@$matches[2])))";
     } else if (preg_match('/^\d+$/', $token, $matches)) {
         $l[] = "(|(supannEmpId=$token)(supannEtuId=$token))";
 
