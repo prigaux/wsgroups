@@ -121,7 +121,7 @@ if (!$attrs || !$attrs['employeeNumber']) {
         - soit avoir perdu une carte physique
         - soit une carte physique est imprimée mais vous ne l'avez pas encore reçu
         
-        Vous n'êtes donc pas éligible (pour l'instant, nous travaillons pour étendre les cas éligibles...)";
+        Vous n'êtes donc pas éligible";
     echoJson([ "error" => $error ]);
     exit(0);
 }
