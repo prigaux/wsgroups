@@ -27,7 +27,7 @@ if (isset($showExtendedInfo) && GET_uid()) {
   $extendedInfo = $allowExtendedInfo = loggedUserAllowedLevel();
 }
 if (isset($allowInvalidAccounts) && GET_uid()) {    
-  $allowedSearchLevel = loggedUserSearchAllowedLevel();
+  $searchLevel = $allowedSearchLevel = loggedUserSearchAllowedLevel();
 }
 
 if ($allowExtendedInfo >= 1 || $allowedSearchLevel >= 1) {
@@ -36,7 +36,7 @@ if ($allowExtendedInfo >= 1 || $allowedSearchLevel >= 1) {
   }
   if (!@$isTrustedIp) {
       global $LDAP_CONNECT_LEVEL1, $LDAP_CONNECT_LEVEL2;
-      $LDAP_CONNECT = $extendedInfo == 2 ? $LDAP_CONNECT_LEVEL2 : $LDAP_CONNECT_LEVEL1;
+      $LDAP_CONNECT = $extendedInfo == 2 || $searchLevel == 2 ? $LDAP_CONNECT_LEVEL2 : $LDAP_CONNECT_LEVEL1;
       global_ldap_open('reOpen');
   }
 }
