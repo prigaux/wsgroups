@@ -34,6 +34,9 @@ if ($allowExtendedInfo >= 1 || $allowedSearchLevel >= 1) {
   if (is_numeric($showExtendedInfo)) {
       $extendedInfo = min($extendedInfo, $showExtendedInfo);
   }
+  if (is_numeric($allowInvalidAccounts)) {
+      $searchLevel = min($searchLevel, $allowInvalidAccounts);
+  }
   if (!@$isTrustedIp) {
       global $LDAP_CONNECT_LEVEL1, $LDAP_CONNECT_LEVEL2;
       $LDAP_CONNECT = $extendedInfo == 2 || $searchLevel == 2 ? $LDAP_CONNECT_LEVEL2 : $LDAP_CONNECT_LEVEL1;
