@@ -7,10 +7,10 @@ require_once ('lib/supannPerson.inc.php');
 $CARTE_ETU_ALLOWED_ATTRS = [
     'sn' => 'sn', 'givenName' => 'givenName',
     'supannEmpId' => 'supannEmpId',
-    'employeeNumber' => 'employeeNumber',
     'employeeType' => 'employeeType',
     'eduPersonPrimaryAffiliation' => 'eduPersonPrimaryAffiliation',
     'up1Profile' => 'MULTI',
+    "supannCMSAppAffectation" => "MULTI",
 ];
 
 
@@ -40,6 +40,13 @@ if (!$attrs) {
     exit(0);
 }
 
+foreach (getAndUnset($attrs, 'supannCMSAppAffectation') ?? [] as $cms_s) {
+    $cms = parse_composite_value($cms_s);
+    if ($cms["type"] === "personnel" && $cms["domaine"] === "barcode.p1ps.fr" && $cms["valide"] === "vrai") {
+        $attrs['employeeNumber'] = $cms["id"];
+    }
+}
+
 $profiles = getAndUnset($attrs, 'up1Profile');
 if ($profiles) {
     foreach ($profiles as $profile) {
@@ -65,7 +72,7 @@ if ($profiles) {
     }
 }
 
-if (!$attrs) {
+if (!$attrs || !$attrs['employeeNumber']) {
     echoJson([ "error" => "Unauthorized" ]);
     exit(0);
 }
