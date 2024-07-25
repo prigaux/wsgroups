@@ -8,10 +8,10 @@ $CARTE_ETU_ALLOWED_ATTRS = [
     'sn' => 'sn', 'givenName' => 'givenName', 'supannNomDeNaissance' => 'supannNomDeNaissance',
     'supannEtuId' => 'supannEtuId',
     'supannCodeINE' => 'supannCodeINE',
-    'employeeNumber' => 'employeeNumber',
     'supannEntiteAffectationPrincipale' => 'supannEntiteAffectationPrincipale',
     'supannEtuInscription' => 'MULTI',
     'supannRefId' => 'MULTI',
+    "supannCMSAppAffectation" => "MULTI",
 ];
 
 $UP1_COMPOSANTE_TO_LIB_CMP_STICKER = [
@@ -108,9 +108,17 @@ $etab = '{UAI}0751717J';
 if ($attrs) {
     $ids = groupByEtiquette(getAndUnset($attrs, 'supannRefId'));
     if (isset($ids['ESCN'])) $attrs['ESCN'] = $ids['ESCN'];
+
+    $wanted_cms_type = 'etudiant';
     if (isset($_GET["iae"])) {
         $etab = '{UAI}0753364Z';
-        $attrs['employeeNumber'] = $ids['UAI:0753364Z:BARCODE'];
+        $wanted_cms_type = "{UAI:0753364Z}etudiant";
+    }
+    foreach (getAndUnset($attrs, 'supannCMSAppAffectation') ?? [] as $cms_s) {
+        $cms = parse_composite_value($cms_s);
+        if ($cms["type"] === $wanted_cms_type && $cms["source"] === "unicampus@p1ps.fr" && $cms["domaine"] === "barcode.p1ps.fr" && $cms["valide"] === "vrai") {
+            $attrs['employeeNumber'] = $cms["id"];
+        }
     }
 }    
 
