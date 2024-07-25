@@ -1163,8 +1163,16 @@ function formatUserInfo(info, showExtendedInfo) {
 
     if (showExtendedInfo >= 2) fInfo.Listes = get_lists(info);
 
-    if (info.allowExtendedInfo >= 1 && !info.isRole) fInfo["Photo"] = "<img src='" + userphotoUrl + "?uid=" + info.uid +
-        (showExtendedInfo >= 2 ? "&app-cli=userinfo" : "") + "'>";
+    if (info.allowExtendedInfo >= 1 && !info.isRole) {
+        const to_url = (type) => (
+            userphotoUrl + "?uid=" + info.uid + (showExtendedInfo >= 2 ? "&app-cli=userinfo" : "") + (type ? `&type-photo=${type}-only` : "")
+        )
+        fInfo["Photo"] = `
+            <img src='${to_url()}'>
+        ` + ['etu', 'pro'].map(type =>
+            `<span>Photo ${type} imprimée : <img onerror="this.parentElement.style.display = 'none'" style="width: 100px" src='${to_url(type)}'></span>`
+        ).join("")
+    }
 
     if (info.accountStatus === "active" && info.allowExtendedInfo >= 1 && !info.isRole) get_Applications(info, fInfo)
 
