@@ -31,9 +31,8 @@ $AFFILIATIONS_PERSONNEL = array('staff', 'faculty', 'teacher');
 // specific Paris1:
 $UP1_ROLES_DN = "ou=roles,".$BASE_DN;
 
-$CASv3_WRAPPER_AUTHORIZED_SERVICES = null; // regexp
-$CASv3_WRAPPER_ALLOWED_ATTRS = [ "mail" => "mail", "displayName" => "displayName", "eduPersonPrincipalName" => "eduPersonPrincipalName" ];
+$CAS_BIU_BIS_WRAPPER_AUTHORIZED_SERVICES = null; // regexp
 
-$OUR_CASv3_URL = "https://casv3.univ.fr/cas";
+$CAS_BIU_BIS_URL = "https://cas-bis.univ-paris1.fr/cas-bis";
 
 ?>
