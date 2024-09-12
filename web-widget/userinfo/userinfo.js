@@ -1021,6 +1021,8 @@ function compute_Account_and_accountStatus(info, fInfo) {
     }
     if (info.allowExtendedInfo > 1)
 	fInfo.accountStatus.append(get_lastLogins(info));
+    if (info.allowExtendedInfo >= 2)
+        fInfo.accountStatus.append(", ").append($("<a>", { target: '_blank', href: "https://esup-otp-manager.univ-paris1.fr/login?user=" + info.uid }).text("méthodes OTP"))
 
     if (fInfo.shadowFlag) {
         fInfo.accountStatus.append(" (").append(fInfo.shadowFlag);
