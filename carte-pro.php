@@ -33,7 +33,7 @@ if ($impersonate) {
     }
 }
 
-$attrs = getFirstLdapInfo($PEOPLE_DN, "(&(uid=$uid)(employeeNumber=*)(supannEntiteAffectationPrincipale=*))", $CARTE_ETU_ALLOWED_ATTRS);
+$attrs = getFirstLdapInfo($PEOPLE_DN, "(uid=$uid)", $CARTE_ETU_ALLOWED_ATTRS);
 
 if (!$attrs) {
     echoJson([ "error" => "Unauthorized" ]);
