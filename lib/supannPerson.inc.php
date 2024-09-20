@@ -172,7 +172,11 @@ function people_filters($token, $restriction = [], $allowInvalidAccounts = false
 
     if ($tokenIsId) {
         // it is allowed to be an array
-        $l = array_map(function ($token) { return "(|(uid=$token)(mail=$token))"; }, is_array($token) ? $token : [$token]);
+        $l = array_map(function ($token) { 
+            return 
+                preg_match('/^[PL]\d{9}$/', $token) ? "(supannRefId={UAI:0752705H:BARCODE}$token)" : // barcode BIU BIS
+                "(|(uid=$token)(mail=$token))"; 
+        }, is_array($token) ? $token : [$token]);
     } else if ($token === '') {
         $l[] = '(|(supannRoleGenerique={UAI:0751717J:HARPEGE.FCSTR}447)(supannRoleGenerique={UAI:0751717J:HARPEGE.FCSTR}1))'; // very important people first!
         $l[] = '(supannRoleGenerique={SUPANN}D*)'; // then important people
@@ -180,6 +184,9 @@ function people_filters($token, $restriction = [], $allowInvalidAccounts = false
         $l[] = ''; // then the rest
     } else if (preg_match('/(.*?)@(.*)/', $token, $matches)) {
         $l[] = "(|(supannMailPerso=$token)(mail=$token)(&(uid=$matches[1])(mail=*@$matches[2])))";
+    } else if (preg_match('/^[PL]\d{9}$/', $token, $matches)) {
+        // barcode BIU BIS
+        $l[] = "(supannRefId={UAI:0752705H:BARCODE}$token)";
     } else if (preg_match('/^\d+$/', $token, $matches)) {
         $l[] = "(|(supannEmpId=$token)(supannEtuId=$token))";
 
