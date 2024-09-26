@@ -38,6 +38,7 @@ if (isset($_GET["id"])) {
     session_start();
     $_SESSION['service'] = $service;
     if (count($ids) === 0) {
+        header('HTTP/1.0 403 Forbidden');
         echo "Vous n'avez pas de profil compte lecteur BIS.";
         echo "<p></p>";
         echo "Si vous avez un compte lecteur BIS, vous devez migrer votre compte en cliquant <a href='https://comptex.univ-paris1.fr/bis/migration'>ICI</a>.";
