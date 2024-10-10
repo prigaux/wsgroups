@@ -99,7 +99,8 @@ if (@$UP1_ROLES_DN) {
     $USER_ALLOWED_ATTRS['up1Roles'] = [ "MULTI" => true, "LEVEL" => 0 ]; // computed
 }
 
-function allowAttribute($user, $attrName, $allowExtendedInfo) {
+function allowAttribute($user, $attrName, $attrRestrictions) {
+    $allowExtendedInfo = $attrRestrictions['allowExtendedInfo'];
     global $USER_ALLOWED_ATTRS;
     if (in_array($attrName, ['departmentNumber'])) {  
         // employeeType is private for staff & student
@@ -412,13 +413,13 @@ function searchPeople($filter, $attrRestrictions, $wanted_attrs, $KEY_FIELD, $ma
       userHandleSpecialAttributeValues($user, $attrRestrictions['allowExtendedInfo']);
       if (isset($user['up1Profile'])) {
         if (@$attrRestrictions['forceProfile']) {
-            forceProfile($user, $attrRestrictions['forceProfile'], $attrRestrictions['allowExtendedInfo'], $wanted_attrs);
+            forceProfile($user, $attrRestrictions, $wanted_attrs);
             unset($user['up1Profile']);
         } else {
-            $user['up1Profile'] = parse_up1Profile($user['up1Profile'], $attrRestrictions['allowExtendedInfo'], $wanted_attrs, $user);
+            $user['up1Profile'] = parse_up1Profile($user['up1Profile'], $attrRestrictions, $wanted_attrs, $user);
         }
       }
-      userHandleSpecialAttributePrivacy($user, $attrRestrictions['allowExtendedInfo']);
+      userHandleSpecialAttributePrivacy($user, $attrRestrictions);
       format_postalAddress($user);
       if (@$wanted_attrs['up1Roles']) get_up1Roles($user);
     }
@@ -576,9 +577,10 @@ function parse_up1Profile_one_raw($up1Profile) {
     return $r;
 }
 
-function post_parse_up1Profile_one($r, $allowExtendedInfo, $wanted_attrs, $global_user) {
+function post_parse_up1Profile_one($r, $attrRestrictions, $wanted_attrs, $global_user) {
+    $allowExtendedInfo = $attrRestrictions['allowExtendedInfo'];
     if ($allowExtendedInfo < 1) userHandle_PersonnelEnActivitePonctuelle($r);
-    userHandleSpecialAttributePrivacy($r, $allowExtendedInfo);
+    userHandleSpecialAttributePrivacy($r, $attrRestrictions);
     userHandleSpecialAttributeValues_pre($r, $allowExtendedInfo);
     userAttributesKeyToText($r, $wanted_attrs, 
             isset($r['supannCivilite']) ? $r['supannCivilite'] : $global_user['supannCivilite'], 
@@ -588,10 +590,10 @@ function post_parse_up1Profile_one($r, $allowExtendedInfo, $wanted_attrs, $globa
     return $r;
 }
 
-function parse_up1Profile($up1Profile_s, $allowExtendedInfo, $wanted_attrs, $global_user) {
+function parse_up1Profile($up1Profile_s, $attrRestrictions, $wanted_attrs, $global_user) {
     $r = [];
     foreach ($up1Profile_s as $profile) {
-       $r[] = post_parse_up1Profile_one(parse_up1Profile_one_raw($profile), $allowExtendedInfo, $wanted_attrs, $global_user);
+       $r[] = post_parse_up1Profile_one(parse_up1Profile_one_raw($profile), $attrRestrictions, $wanted_attrs, $global_user);
     }
     return $r;
 }
@@ -602,7 +604,8 @@ function array_replace_keys(&$array, $to_set) {
     }
 }
 
-function forceProfile(&$user, $forceProfile, $allowExtendedInfo, $wanted_attrs) {
+function forceProfile(&$user, $attrRestrictions, $wanted_attrs) {
+    $forceProfile = $attrRestrictions['forceProfile'];
     foreach ($user['up1Profile'] as $profile_s) {
         if (preg_match($forceProfile, $profile_s)) {
             $full_profile = parse_up1Profile_one_raw($profile_s);
@@ -618,7 +621,7 @@ function forceProfile(&$user, $forceProfile, $allowExtendedInfo, $wanted_attrs) 
                 }
                 $full_profile['eduPersonPrimaryAffiliation'] = 'teacher';
             }
-            $profile = post_parse_up1Profile_one($full_profile, $allowExtendedInfo, $wanted_attrs, $user);
+            $profile = post_parse_up1Profile_one($full_profile, $attrRestrictions, $wanted_attrs, $user);
             array_replace_keys($user, $profile);
             foreach (['supannActivite', 'supannActivite-all'] as $profiled_attr) {
                 if (!isset($profile[$profiled_attr])) unset($user[$profiled_attr]);
@@ -779,9 +782,9 @@ function rdnToSupannCodeEntites($l) {
   return $codes;
 }
 
-function userHandleSpecialAttributePrivacy(&$user, $allowExtendedInfo) {
+function userHandleSpecialAttributePrivacy(&$user, $attrRestrictions) {
     foreach ($user as $attrName => $val) {
-        if (!allowAttribute($user, $attrName, $allowExtendedInfo)) {
+        if (!allowAttribute($user, $attrName, $attrRestrictions)) {
             unset($user[$attrName]);
         }
     }
