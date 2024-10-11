@@ -26,7 +26,7 @@ if (isset($showExtendedInfo) && GET_uid()) {
   if (GET_or_NULL('CAS') !== 'MFA') fatal("showExtendedInfo requires CAS=MFA");
   $extendedInfo = $allowExtendedInfo = loggedUserAllowedLevel();
 }
-if (isset($allowInvalidAccounts) && GET_uid()) {    
+if ((isset($allowInvalidAccounts) || isset($allowNoAffiliationAccounts)) && GET_uid()) {
   $searchLevel = $allowedSearchLevel = loggedUserSearchAllowedLevel();
 }
 
@@ -42,6 +42,8 @@ if ($allowExtendedInfo >= 1 || $allowedSearchLevel >= 1) {
       $LDAP_CONNECT = $extendedInfo == 2 || $searchLevel == 2 ? $LDAP_CONNECT_LEVEL2 : $LDAP_CONNECT_LEVEL1;
       global_ldap_open('reOpen');
   }
+} else {
+    $allowInvalidAccounts = $allowNoAffiliationAccounts = false;
 }
 
 $restriction = GET_extra_people_filter_from_params();
