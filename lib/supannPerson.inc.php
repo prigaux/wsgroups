@@ -110,6 +110,8 @@ function allowAttribute($user, $attrName, $attrRestrictions) {
         // departmentNumber is not interesting for staff & student
         if (in_array(@$user['eduPersonPrimaryAffiliation'], array('teacher', 'emeritus', 'researcher'))) return true;
         return $allowExtendedInfo >= 2;
+    } else if (in_array($attrName, ['mobile'])) { 
+        return $attrRestrictions['allowListeRouge'];
     }
     return $allowExtendedInfo >= $USER_ALLOWED_ATTRS[$attrName]["LEVEL"];
 }
