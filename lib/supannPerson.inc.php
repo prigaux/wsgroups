@@ -21,9 +21,9 @@ $attrs_by_kind = [
 	'supannAliasLogin',
   ],
   "MONO 0" => [
-	'accountStatus', 
   ],
   "MONO 1" => [
+    'accountStatus',
     'uidNumber', 'gidNumber',
     'supannEmpId', 'supannEtuId', 'supannCodeINE', 'supannFCSub',
     'shadowFlag', 'shadowExpire', 'shadowLastChange',    
@@ -49,13 +49,12 @@ $attrs_by_kind = [
   "MULTI -1" => [
     'supannEntiteAffectation', 'supannEntiteAffectation-ou', 'supannEntiteAffectation-all',
     'eduPersonAffiliation', 
-    'buildingName', 'description', 'info',
-	'supannEtablissement', 'supannActivite', 'supannActivite-all',
-	'supannParrainDN', 'supannParrainDN-ou', 'supannParrainDN-all',
+    'buildingName', 'description', 
+    'info', // NB : "info;x-demande" est caché pour le bind "wsgroups" + est caché dans up1Profile (car "info;x-demande" est niveau 1)
+    'supannActivite', 'supannActivite-all',
 	'supannRoleEntite', 'supannRoleEntite-all',
 	'supannEtuInscription', 'supannEtuInscription-all',
 	'supannRoleGenerique',
-    'eduPersonEntitlement',
 
     'up1AltGivenName',
 	'roomNumber', 'up1FloorNumber', 'up1RoomAccess',
@@ -65,7 +64,6 @@ $attrs_by_kind = [
 	'supannAutreTelephone',
 
 	'labeledURI',
-    'seeAlso', 'seeAlso-all',
     
     'employeeType', 'employeeType-all', 'departmentNumber', // NB: non teacher/emeritus/researcher have a specific LEVEL 2 for those attrs
     'up1Profile', // will be filtered
@@ -73,9 +71,14 @@ $attrs_by_kind = [
   "MULTI 0" => [
     'mobile',
     'up1KrbPrincipal',
-    'supannCodePopulation', 'supannCodePopulation-all', 'supannEmpProfil-all', 'supannExtProfil-all',
+    'supannCodePopulation', 'supannCodePopulation-all', 'supannEmpProfil-all', 
   ],
   "MULTI 1" => [
+    'eduPersonEntitlement', // attention, contient des données CUJAS
+    'seeAlso', 'seeAlso-all',
+    'supannExtProfil-all',
+	'supannEtablissement',
+	'supannParrainDN', 'supannParrainDN-ou', 'supannParrainDN-all', // NB : attention notamment aux parrains qui sont des personnes
 	'objectClass',
 	'memberOf', 'memberOf-all',
 	// below are restricted or internal attributes.
@@ -96,7 +99,7 @@ foreach ($attrs_by_kind as $kind => $attrs) {
 }
 global $UP1_ROLES_DN;
 if (@$UP1_ROLES_DN) {
-    $USER_ALLOWED_ATTRS['up1Roles'] = [ "MULTI" => true, "LEVEL" => 0 ]; // computed
+    $USER_ALLOWED_ATTRS['up1Roles'] = [ "MULTI" => true, "LEVEL" => 1 ]; // computed
 }
 
 function allowAttribute($user, $attrName, $attrRestrictions) {
