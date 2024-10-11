@@ -162,14 +162,21 @@ function roomNumber_filter($normalized_token, $ext) {
     return ldapOr($or);
 }
 
+function people_restrictions($attrRestrictions, $allowInvalidAccounts, $allowNoAffiliationAccounts) {
+    if ($allowInvalidAccounts) {
+        return '(&(objectClass=inetOrgPerson)(!(shadowFlag=2))(!(shadowFlag=8)))'; // ignore dupes/deceased
+    } else if ($allowNoAffiliationAccounts) {
+        return '(|(accountStatus=active)(!(accountStatus=*)))';
+    } else if ($attrRestrictions['allowListeRouge']) {
+        return '(eduPersonAffiliation=*)';
+    } else {
+        return '(&(mail=*)(|(eduPersonAffiliation=teacher)(eduPersonAffiliation=researcher)(eduPersonAffiliation=staff)(eduPersonAffiliation=emeritus)(eduPersonAffiliation=student)(eduPersonAffiliation=alum)))';
+    }
+}
+
 function people_filters($token, $restriction, $attrRestrictions, $allowInvalidAccounts = false, $allowNoAffiliationAccounts = false, $tokenIsId = false) {
     if ($allowInvalidAccounts !== 'all') {
-        $restriction[] = $allowInvalidAccounts ? '(&(objectClass=inetOrgPerson)(!(shadowFlag=2))(!(shadowFlag=8)))' : // ignore dupes/deceased
-                     ($allowNoAffiliationAccounts ? '(|(accountStatus=active)(!(accountStatus=*)))' : 
-                        ($attrRestrictions['allowListeRouge'] ? '(eduPersonAffiliation=*)' : 
-                            '(&(mail=*)(|(eduPersonAffiliation=teacher)(eduPersonAffiliation=researcher)(eduPersonAffiliation=staff)(eduPersonAffiliation=emeritus)(eduPersonAffiliation=student)(eduPersonAffiliation=alum)))'
-                        )
-                     );
+        $restriction[] = people_restrictions($attrRestrictions, $allowInvalidAccounts, $allowNoAffiliationAccounts);
     }
 
     $l = array();
