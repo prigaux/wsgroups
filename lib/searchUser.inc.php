@@ -63,7 +63,7 @@ if (!@$isTrustedIp) {
 }
 
 global $USER_KEY_FIELD;
-$users = searchPeople(people_filters($token, $restriction, $allowInvalidAccounts, $allowNoAffiliationAccounts, $tokenIsId), $attrRestrictions, $wanted_attrs, $USER_KEY_FIELD, $maxRows);
+$users = searchPeople(people_filters($token, $restriction, $attrRestrictions, $allowInvalidAccounts, $allowNoAffiliationAccounts, $tokenIsId), $attrRestrictions, $wanted_attrs, $USER_KEY_FIELD, $maxRows);
 
 if (count($users) > 0 && GET_uid()) {
     $users[0]['globalInfo'] = [ "maxRows" => $maxRows, "allowExtendedInfo" => $allowExtendedInfo ];

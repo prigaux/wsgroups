@@ -32,7 +32,7 @@ $wanted_user_attrs = people_attrs($user_attrs);
 $attrRestrictions = attrRestrictions();
 
 global $USER_KEY_FIELD;
-$r['users'] = searchPeople(people_filters($token, $restriction), $attrRestrictions, $wanted_user_attrs, $USER_KEY_FIELD, $maxRows);
+$r['users'] = searchPeople(people_filters($token, $restriction, $attrRestrictions), $attrRestrictions, $wanted_user_attrs, $USER_KEY_FIELD, $maxRows);
 }
 
 if (in_array('groups', $kinds)) {
