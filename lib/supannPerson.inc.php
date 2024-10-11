@@ -167,10 +167,24 @@ function people_restrictions($attrRestrictions, $allowInvalidAccounts, $allowNoA
         return '(&(objectClass=inetOrgPerson)(!(shadowFlag=2))(!(shadowFlag=8)))'; // ignore dupes/deceased
     } else if ($allowNoAffiliationAccounts) {
         return '(|(accountStatus=active)(!(accountStatus=*)))';
-    } else if ($attrRestrictions['allowListeRouge']) {
-        return '(eduPersonAffiliation=*)';
     } else {
-        return '(&(mail=*)(|(eduPersonAffiliation=teacher)(eduPersonAffiliation=researcher)(eduPersonAffiliation=staff)(eduPersonAffiliation=emeritus)(eduPersonAffiliation=student)(eduPersonAffiliation=alum)))';
+        $or = [
+            '(eduPersonAffiliation=member)', # tous les membres
+            '(eduPersonAffiliation=teacher)', # enseignant, quel qu'en soit le statut (interne, externe, en attente de renouvellement...)
+            '(supannCodePopulation={SUPANN}PXC)', # membres externes d'instances
+            '(supannCodePopulation={SUPANN}PXAD)', # Alumni inscrits
+        ];
+        if ($attrRestrictions['allowListeRouge']) {
+            array_push($or,
+                '(eduPersonAffiliation=staff)', # staff quel qu'en soit le statut: ponctuel, stagiaire, presta externe...
+                '(eduPersonAffiliation=student)', # étudiant quel qu'en soit le statut: cohabilité, comptex/FC, etc
+                '(eduPersonAffiliation=alum)', # anciens étudiants quel qu'en soit le statut (sortants, réentrants...)
+                '(eduPersonAffiliation=retired)', # retraités
+                '(supannCodePopulation=affiliate)', # tous les externes à privilèges (invités, prestataires...)
+                # normalement les faculty/researcher/emeritus devraient être matchés par member, on ne devrait pas avoir besoin de filtre spécifique pour eux.
+            );
+        }
+        return "(&(mail=*)" . ldapOr($or) . ")";
     }
 }
 
