@@ -329,6 +329,7 @@ this.window.kraaden_autocomplete = (function () {
           }
           else {
               clear();
+              if (settings.noFetch) settings.noFetch(input.value)
           }
       }
       function startFetch(inputText, trigger, cursorPos) {

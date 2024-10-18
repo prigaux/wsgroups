@@ -272,6 +272,7 @@
         fetch: function(text, update) {
            source({ term: text }, update)
         },
+        noFetch: options.noFetch || function(inputText) {},
         onSelect: onSelect(input, settings),
         emptyMsg: 'aucun résultat', // NB: emptyMsg is needed for "customize" to be called
         render: myRenderUserItem,
