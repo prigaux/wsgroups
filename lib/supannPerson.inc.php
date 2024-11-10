@@ -950,12 +950,17 @@ if (isset($user['supannParrainDN'])) {
 	  unset($user['memberOf']);
   }
   if (isset($user['supannRoleGenerique'])) {
+    $l = [];
     global $roleGeneriqueKeyToAll;
     foreach ($user['supannRoleGenerique'] as &$e) {
-      if ($role = $roleGeneriqueKeyToAll[$e]) {
-          $e = all_to_name_with_gender($role, $supannCivilite);
-      }
+      $l[] = $roleGeneriqueKeyToAll[$e] ?? [ "name" => $e ];
     }
+    usort($l, function ($a, $b) {
+        return ($a["weight"] ?? '') <=> ($b["weight"] ?? '');
+    });
+    $user['supannRoleGenerique'] = array_map(function ($role) use ($supannCivilite) {
+        return all_to_name_with_gender($role, $supannCivilite);
+    }, $l);
   }
   if (isset($user['supannActivite'])) {
     if (isset($wanted_attrs['supannActivite-all']))
