@@ -360,17 +360,6 @@ function groupKey2filter($key) {
   }
 }
 
-function isPersonMatchingFilter($uid, $filter) {
-    global $PEOPLE_DN;
-    return existsLdap($PEOPLE_DN, "(&(uid=$uid)" . $filter . ")");
-}
-
-function loggedUserAllowedLevel() {
-    global $LEVEL1_FILTER, $LEVEL2_FILTER;
-    return isPersonMatchingFilter(GET_uid(), $LEVEL1_FILTER) ?
-        (isPersonMatchingFilter(GET_uid(), $LEVEL2_FILTER) ? 2 : 1) : 0;
-}
-
 function loggedUserSearchAllowedLevel() {
     global $LEVEL1_SEARCH_FILTER, $LEVEL2_FILTER;
     return isPersonMatchingFilter(GET_uid(), $LEVEL1_SEARCH_FILTER) ?
@@ -410,15 +399,6 @@ function searchPeopleRaw($filter, $allowListeRouge, $allowRoles, $wanted_attrs, 
 	  }
 	}
       }
-    }
-    return $r;
-}
-
-function wanted_attrs_raw($wanted_attrs) {
-    $r = array();
-    foreach ($wanted_attrs as $attr => $v) {
-	$attr_raw = preg_replace('/^([^;]*)-[^;]*/', '$1', $attr);
-	$r[$attr_raw] = preg_replace('/^([^;]*)-[^;]*/', '$1', $v);
     }
     return $r;
 }
@@ -788,11 +768,7 @@ function memberOfAll($l) {
 }
 
 function getDNs($l) {
-  $attrs = array("ou" => "name", "displayName" => "name", "description" => "description", "labeledURI" => "labeledURI", "mail" => "mail");
-
-  $r = [];
-  foreach ($l as $dn) $r[] = getLdapDN_with_DN_as_key($dn, $attrs);
-  return $r;
+    return get_people_DNs($l);
 }
 function getDN($dn) {
     return getDNS([$dn])[0];
