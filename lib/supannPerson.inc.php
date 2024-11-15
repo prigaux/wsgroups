@@ -25,7 +25,8 @@ $attrs_by_kind = [
   "MONO 1" => [
     'accountStatus',
     'uidNumber', 'gidNumber',
-    'supannEmpId', 'supannEtuId', 'supannCodeINE', 'supannFCSub',
+    'supannEmpId', 'supannEtuId', 'supannCodeINE', 
+    'supannFCSub', // NB : seul le début du sub est renvoyé (ex: "0123456789...")
     'shadowFlag', 'shadowExpire', 'shadowLastChange',    
 	'homeDirectory', 'gecos',
     'sambaAcctFlags', 'sambaSID', 'sambaHomePath',
@@ -840,6 +841,9 @@ function userHandleSpecialAttributeValues_pre(&$user, $allowExtendedInfo) {
                 });
             }
         }    
+    }
+    if (isset($user['supannFCSub'])) {
+        $user['supannFCSub'] = substr($user['supannFCSub'], 0, 10) . '...';
     }
 }
 
