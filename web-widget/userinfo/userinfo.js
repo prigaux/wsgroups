@@ -4,6 +4,7 @@ var baseURL = "https://wsgroups-test.univ-paris1.fr";
 var searchUserURL = baseURL + '/searchUser?CAS=MFA';
 var getGroupURL = baseURL + '/getGroup';
 var lastLoginsUrl = baseURL + '/userLastLogins';
+var lastLoginsOTPUrl = 'https://wsgroups.univ-paris1.fr/userLastLoginsOTP';
 var moreInfoUrl = baseURL + '/userMoreInfo?CAS=MFA';
 var helpUrl = 'https://dsiundoc.univ-paris1.fr/doku.php?id=refi:userinfo-web#HELP_ID';
 helpUrl = 'https://idp.univ-paris1.fr/idp/profile/Shibboleth/SSO?shire=https://dsiundoc.univ-paris1.fr/Shibboleth.sso/SAML/POST&target=' + escape(helpUrl) + '&providerId=https://dsiundoc.univ-paris1.fr';
@@ -704,6 +705,33 @@ function formatLastLogins(info, data, div) {
     }
 }
 
+function formatLastLoginsOTP(info, list, div) {
+    // wrapper de formatDateTime pour gérer qque temps les dates au format "Dec 31 23:59:59" qui ne sont pas parsable facilement
+    const formatDateTime_ = (date) => date.match(/ /) ? `le ${date}` : formatDateTime(date)
+
+    if (list.length === 0) return;
+    const lastValid = list.find(e => e.msg === "valid OTP");
+    if (lastValid) {
+	    div.text(", dernier login OTP " + formatDateTime_(lastValid.date));
+    } else {
+        const lastReuse = list.find(e => e.msg === "reusing validated OTP from session");
+        if (lastReuse) {
+            div.text(", dernière réutilisation d'une session OTP " + formatDateTime_(lastReuse.date));
+        }
+    }
+
+	var details = $("<div class='vertical-scroll hidden'>");
+    for (const e of list) {
+        const info = [ e.method || e.reason || e.service ]
+        if (e.validated_otp_too_old) info.push('validated_otp_too_old')
+        const category = { 'valid OTP': 'success', 'no OTP': 'notice' }[e.msg] || ''
+	    var t = `${formatDateTime_(e.date)} : <span class='${category}'>${e.msg}</span> <small>(<span class='small-ellipsis'>${info.join(', ')}</span>)</small>`
+	    details.append(t + '<br>');
+	}
+	div.append($("<span class='clickable'>").append(" <small>details</small>").click(function () { details.toggleClass("hidden") }));
+	div.append(details);
+}
+
 function format_one_kerberosInfo(info, principal, krb) {
     var txt = [ $("<span>", { title: principal }).text("KERBEROS") ];
 	
@@ -886,6 +914,14 @@ function get_lastLogins(info) {
     return infoDiv;
 }
     
+function get_lastLoginsOTP(info) {
+    var infoDiv = $("<span>");
+    asyncInfoRaw(lastLoginsOTPUrl, { uid: info.uid }, infoDiv, function (data) {
+		infoDiv.empty().append(formatLastLoginsOTP(info, data, infoDiv));
+    });
+    return infoDiv;
+}
+    
 function get_kerberosInfo(info, infoDiv) {
     asyncInfoRaw(moreInfoUrl, { uid: info.uid, info: "auth" }, infoDiv, function (data) {
 	    var moreInfo = data && data[info.uid];
@@ -1019,8 +1055,10 @@ function compute_Account_and_accountStatus(info, fInfo) {
 	if (!info.eduPersonAffiliation && !info.isRole)
 	    fInfo.accountStatus.append(" (" + important('il manque eduPersonAffiliation', 'no-affiliation', 'info') + ")");
     }
-    if (info.allowExtendedInfo > 1)
-	fInfo.accountStatus.append(get_lastLogins(info));
+    if (info.allowExtendedInfo > 1) {
+        fInfo.accountStatus.append(get_lastLogins(info));
+        fInfo.accountStatus.append(get_lastLoginsOTP(info));
+    }
     if (info.allowExtendedInfo >= 2)
         fInfo.accountStatus.append(", ").append($("<a>", { target: '_blank', href: "https://esup-otp-manager.univ-paris1.fr/login?user=" + info.uid }).text("méthodes OTP"))
 

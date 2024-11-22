@@ -33,6 +33,10 @@ span.notice {
     color: orange;
     font-weight: bold;
 }
+span.success {
+    color: green;
+    font-weight: bold;
+}
 span.info {
     font-size: 80%;
 }
@@ -107,4 +111,13 @@ select:empty {
 
 tbody:empty {
     display: none;
+}
+
+.small-ellipsis {
+    display: inline-block;
+    max-width: 20em;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    vertical-align: middle;
 }
