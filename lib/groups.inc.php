@@ -149,9 +149,19 @@ function removeStructureOrganization($map) {
   return $map["businessCategory"] !== 'organization';
 }
 
-function getGroupsFromGroupsDnRaw($filters, $ignoreEquivToStructureGroups, $sizelimit, $timelimit = 0) {
+function getGroupsFromGroupsDnRaw($filters, $ignoreEquivToStructureGroups, $sizelimit, $timelimit, $more_attrs) {
   global $GROUPS_DN, $GROUPS_ATTRS;
-  $r = getLdapInfoMultiFilters($GROUPS_DN, $filters, $GROUPS_ATTRS, "key", $sizelimit, $timelimit);
+  $peopleDN_attrs = [ 'supannGroupeAdminDN' => 'MULTI', 'supannGroupeLecteurDN' => 'MULTI' ];
+  $attrs = $GROUPS_ATTRS;
+  if ($more_attrs[0]) {
+    if (loggedUserAllowedLevel() >= 1) {
+        // add $more_attrs (if allowed in $peopleDN_attrs)
+        $attrs = array_merge($attrs, $attrs, 
+            array_intersect_key($peopleDN_attrs,
+                fromPairs(array_map(function ($attr) { return [ $attr, null ]; }, wanted_attrs_raw($more_attrs)))));
+    }
+  }
+  $r = getLdapInfoMultiFilters($GROUPS_DN, $filters, $attrs, "key", $sizelimit, $timelimit);
   if ($ignoreEquivToStructureGroups) {
       $r = array_filter_($r, 'notGrouperBasedOnLdapAttrs');
   }
@@ -159,11 +169,16 @@ function getGroupsFromGroupsDnRaw($filters, $ignoreEquivToStructureGroups, $size
       $map["rawKey"] = $map["key"];
       $map["key"] = "groups-" . $map["key"];
       if (!isset($map["name"])) $map["name"] = $map["rawKey"];
+      foreach ($peopleDN_attrs as $attr => $_) {
+          if (in_array("$attr-all", $more_attrs)) {
+            $map["$attr-all"] = get_people_DNs(getAndUnset($map, $attr));
+          }
+      }
   }
   return $r;
 }
-function getGroupsFromGroupsDn($filters, $ignoreEquivToStructureGroups, $sizelimit = 0) {
-    $r = getGroupsFromGroupsDnRaw($filters, $ignoreEquivToStructureGroups, $sizelimit);
+function getGroupsFromGroupsDn($filters, $ignoreEquivToStructureGroups, $sizelimit = 0, $more_attrs = []) {
+    $r = getGroupsFromGroupsDnRaw($filters, $ignoreEquivToStructureGroups, $sizelimit, 0, $more_attrs);
     computeDescriptionsFromSeeAlso($r);
     return $r;
 }
@@ -250,7 +265,7 @@ function getGroupFromSeeAlso($seeAlso, $allStructures = false, $attrs = array())
     $seeAlso = normalizeSeeAlso($seeAlso);
 
     if (contains($seeAlso, $GROUPS_DN))
-	$groups = getGroupsFromGroupsDnRaw(array("(entryDN=$seeAlso)"), false, 1, 1);
+	$groups = getGroupsFromGroupsDnRaw(array("(entryDN=$seeAlso)"), false, 1, 1, $attrs);
     else if (contains($seeAlso, $STRUCTURES_DN)) {
     $groups = getGroupsFromStructuresDn(array("(entryDN=$seeAlso)"), 1, $allStructures, $attrs);
     } else

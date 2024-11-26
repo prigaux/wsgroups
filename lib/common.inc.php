@@ -353,6 +353,14 @@ function removePrefixOrNULL($s, $prefix) {
     return startsWith($s, $prefix) ? substr($s, strlen($prefix)) : NULL;
 }
 
+function fromPairs(array $pairs) {
+    $r = [];
+    foreach ($pairs as [$key, $value]) {
+        $r[$key] = $value;
+    }
+    return $r;
+}
+
 function error($msg) {
    header("HTTP/1.0 400 $msg");
    echo("// $msg\n");
