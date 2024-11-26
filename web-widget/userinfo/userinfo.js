@@ -1183,20 +1183,21 @@ function format_link(link) {
 function formatUserInfo(info, showExtendedInfo) {
     //if (info.roomNumber) info.postalAddress = info.roomNumber + ", " + info.postalAddress;
 
-    if (!info.up1Profile && !info.up1Source) info.up1Profile = []; // force displaying even if empty to handle virtual profiles
-    
     var fInfo = {};
 
     formatSomeUserValues(info, fInfo);
+  
+    $.each(simple_formatters, function (attr, formatter) {
+        if (info[attr]) fInfo[attr] = formatter(info[attr], info);
+    });
+
+    if (!info.up1Profile && !info.up1Source) info.up1Profile = []; // force displaying even if empty to handle virtual profiles
 
 	fInfo.Identifiers = info.supannAliasLogin && info.supannAliasLogin !== info.uid ? info.supannAliasLogin + ", uid: " + important(info.uid) : info.uid;
 	fInfo.OtherIdentifiers = compute_Identifiers(info);
 
     
     fInfo.Person = compute_Person(info);
-    $.each(simple_formatters, function (attr, formatter) {
-        if (info[attr]) fInfo[attr] = formatter(info[attr], info);
-    });
     if (info['supannEtuInscription-all']) format_supannEtuInscriptionAll(info['supannEtuInscription-all'], fInfo);
     if (info['supannActivite-all']) format_supannActivite(info['supannActivite-all'], fInfo);
 	// if we have up1BirthDay, we have full power
