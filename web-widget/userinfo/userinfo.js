@@ -463,7 +463,7 @@ function format_main_profile_info(info) {
 }
 
 function format_main_profiles_info(profiles, info) {
-    if (!info.accountStatus || info.accountStatus === "active") {
+    if ((!info.accountStatus || info.accountStatus === "active") && !info.isRole) {
         function add_virtual_profile(up1Source, computedFrom) {
             profiles = profiles.concat([ { up1Source: up1Source, computedFrom: computedFrom } ])
         }
