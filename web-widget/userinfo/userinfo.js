@@ -84,6 +84,8 @@ var main_attrs_labels = [ [
 ],
 [
     'Identifiers: Identifiant',
+    'ou: Nom',
+    'name: Description',
     'OtherIdentifiers: Identifiant(s)',
     'supannFCSub: Identifiant délégation France Connect',
     'accountStatus: Etat du compte',
@@ -1199,6 +1201,12 @@ function formatUserInfo(info, showExtendedInfo) {
     $.each(simple_formatters, function (attr, formatter) {
         if (info[attr]) fInfo[attr] = formatter(info[attr], info);
     });
+    if (info.isGroup) {
+        fInfo.name = $("<span class='white-space-pre'>").text(info.name)
+        fInfo.Identifiers = $("<span>").text(info.rawKey);
+        if (info.rawKey.match(/^(applications|collab|students|employees)[.]/)) fInfo.Identifiers.appendText(" (").append(a_or_span(toGrouperUrl(info.rawKey), 'lien vers Grouper')).appendText(")");
+        return fInfo
+    }
 
     if (!info.up1Profile && !info.up1Source) info.up1Profile = []; // force displaying even if empty to handle virtual profiles
 
@@ -1357,7 +1365,12 @@ const app = Vue.createApp({
             window.location.hash = '#' + user.value;
             this.selectedProfile = '';
      
-            var wsParams = {
+            var isGroup = user.value.startsWith('groups-')
+            var wsParams = isGroup ? { 
+                CAS: true, 
+                key: user.value, 
+                attrs: 'supannGroupeLecteurDN-all,supannGroupeAdminDN-all',
+             } : {
                 id: user.value,
                 showErrors: this.showExtendedInfo,
                 allowInvalidAccounts: 'all',
@@ -1365,7 +1378,11 @@ const app = Vue.createApp({
                 showExtendedInfo: this.showExtendedInfo
             };
             var that = this;
-            asyncInfoRaw(searchUserURL, wsParams, this, function (data) {
+            asyncInfoRaw(isGroup ? getGroupURL : searchUserURL, wsParams, this, function (data) {
+                if (isGroup) {
+                    data.isGroup = true
+                    data = [data]
+                }
                 if (data.length > 1) {
                     var sub = data.filter(function (u) { return user.value === u.uid });
                     if (sub.length) data = sub;

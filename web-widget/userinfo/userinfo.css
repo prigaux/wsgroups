@@ -69,6 +69,9 @@ span[title], a[title] {
   z-index: 1;
   white-space: pre;
 }
+.white-space-pre {
+  white-space: pre;
+}
 @media screen and (max-device-width: 800px){
     .clickedTitle {
         position: fixed;
