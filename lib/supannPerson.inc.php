@@ -85,6 +85,7 @@ $attrs_by_kind = [
 	// below are restricted or internal attributes.
 	'mailForwardingAddress', 'mailDeliveryOption', 'mailAlternateAddress',
     'supannConsentement', 'up1TermsOfUse',
+    'supannCMSAffectation', 'supannCMSAppAffectation',
     // for roles (which are groups)
     'member', 'member-all', 'supannGroupeLecteurDN', 'supannGroupeLecteurDN-all', 'supannGroupeAdminDN', 'supannGroupeAdminDN-all',
   ],
@@ -827,6 +828,14 @@ function userHandleSpecialAttributeValues(&$user, $allowExtendedInfo) {
             $user['labeledURI'] = array_filter($user['labeledURI'], function ($uri) { return !contains($uri, ' {DEMANDE}'); });
         }
     }
+    foreach (['supannCMSAffectation', 'supannCMSAppAffectation'] as $key) {
+        if (isset($user[$key]) && $allowExtendedInfo < 2) {
+            foreach ($user[$key] as &$a) {
+                // 'id' fields is the more sensitive, hide it unless level 2
+                $a['id'] = '';
+            }
+        }
+    }
 }
 function userHandleSpecialAttributeValues_pre(&$user, $allowExtendedInfo) {
     if ($allowExtendedInfo < 2) {
@@ -1043,6 +1052,11 @@ if (isset($user['supannParrainDN'])) {
         $name = supannEtablissementShortname($e);
         if ($name) $e = $name;
       }
+    }
+  }
+  foreach (['supannCMSAffectation', 'supannCMSAppAffectation'] as $key) {
+    if (isset($user[$key])) {
+        $user[$key] = array_map('parse_composite_value', $user[$key]);
     }
   }
 }
