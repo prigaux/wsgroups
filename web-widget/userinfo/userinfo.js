@@ -95,6 +95,8 @@ var main_attrs_labels = [ [
     'supannEmpProfil-all: Profil(s) employé',
     'up1Source: Profil',
     'up1Profile: Profils',
+    'supannCMSAffectation: Carte(s) multi-service',
+    'supannCMSAppAffectation: Carte(s) multi-service',
     'supannRefId: RefIds',
 ],
 [
@@ -216,6 +218,8 @@ var simple_formatters = {
     'supannExtProfil-all': format_supannEmpExtProfilAll,
     supannRefId: format_supannRefId,
     mailForwardingAddress: compute_MailDelivery,
+    supannCMSAffectation: format_cartes_multi_service,
+    supannCMSAppAffectation: format_cartes_multi_service,
     up1Profile: format_main_profiles_info,
     up1Source: function (_, info) { return format_main_profile_info(info) },
 };
@@ -1095,6 +1099,16 @@ function format_up1Roles(val) {
 	    .append($("<a>", { href: "#" + mail }).text(mail))
 	    .appendText(" (" + roles.join(", ") + ")");
     }), "<br>");
+}
+
+function format_cartes_multi_service (composites) {
+    const format_one = (one) => (
+        `${one.id ? one.id + ' ' : ''}${one.format || one.domaine} pour le ${one.type} émise par ${one.source}${
+            one.valide !== 'vrai' ? "<span class='notice'> invalide</span> depuis le " + formagtime(one.datefin) :
+            one.source === 'siham@p1ps.fr' ? " <span class='notice'>carte pas encore imprimée</span>" : ''
+        }`
+    )
+    return composites?.map(format_one)
 }
 
 function format_members(val) {
