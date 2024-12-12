@@ -106,8 +106,6 @@ var main_attrs_labels = [ [
 ],
 [
     'up1Roles: Courriel(s) de fonction',
-
-    //'supannRefID: RefId',
     'supannListeRouge: ' + important('Liste rouge'),
     "up1TermsOfUse: Conditions d'utilisation",
     "supannConsentement: Conditions d'utilisation",
