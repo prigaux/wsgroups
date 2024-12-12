@@ -1106,7 +1106,7 @@ function format_cartes_multi_service (composites) {
             one.source === 'siham@p1ps.fr' ? " <span class='notice'>carte pas encore imprimée</span>" : ''
         }`
     )
-    return composites?.map(format_one)
+    return composites?.map(format_one).join("<br>")
 }
 
 function format_members(val) {
