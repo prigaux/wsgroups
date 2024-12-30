@@ -7,16 +7,6 @@ RewriteEngine on
 RewriteRule ^(\w+)$ $1.php [NC,L]
 RewriteRule ^(.*\.html\.js)$ $1.php [NC,L]
 
-<FilesMatch "\.html\.js$">
-    SetHandler application/x-httpd-php
-</FilesMatch>
-
 <FilesMatch "\.inc\.php$">
     Require all denied
-</FilesMatch>
-
-<FilesMatch "^(annuaire.html)$">
-    Require all granted
-    AuthType CAS
-    require valid-user
 </FilesMatch>
