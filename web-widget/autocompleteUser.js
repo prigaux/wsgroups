@@ -267,7 +267,7 @@
         showOnFocus: true,
         minLength: settings.minLength,
         debounceWaitMs: 200,
-        preventSubmit: 2, // settings.disableEnterKey ? 1 : 0
+        preventSubmit: settings.disableEnterKey ? 1 : 2,
         input: input, 
         fetch: function(text, update) {
            source({ term: text }, update)
@@ -476,7 +476,7 @@ var myRenderGroupItem = function (navigate) {
         showOnFocus: true,
         minLength: settings.minLength,
         debounceWaitMs: 200,
-        preventSubmit: 2, // settings.disableEnterKey ? 1 : 0
+        preventSubmit: settings.disableEnterKey ? 1 : 2,
         input: input, 
         fetch: function(text, update) {
            source({ term: text }, update)
@@ -570,7 +570,7 @@ var myRenderGroupItem = function (navigate) {
         minLength: settings.minLength,
         disableAutoSelect: settings.disableAutoSelect,
         debounceWaitMs: 200,
-        preventSubmit: 2, // settings.disableEnterKey ? 1 : 0
+        preventSubmit: settings.disableEnterKey ? 1 : 2,
         input: input, 
         fetch: function(text, update) {
            source({ term: text }, update)
