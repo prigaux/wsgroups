@@ -79,7 +79,7 @@ function diploma_name($code_etape) {
     return removePrefix($diploma[0]["description"], "$code_etape - ");
 }
 
-function importantEtuInscription($inscriptions, $primaryAffect, $uid, $etab) {
+function importantEtuInscription($inscriptions, $uid, $etab) {
     $best = null;
     foreach ($inscriptions as $s) {
         $inscr = parse_supannEtuInscription($s);
@@ -90,7 +90,6 @@ function importantEtuInscription($inscriptions, $primaryAffect, $uid, $etab) {
         }
     }
     if ($best) {
-        if ($best['affect'] !== $primaryAffect) error_log("weird affectation for $uid");
         $code_etape = removePrefix($best['etape'], '{UAI:0751717J}');
         $best = [
             'affect' => affectation_label($best['affect']),
@@ -134,7 +133,7 @@ if (!$attrs || !$attrs['employeeNumber']) {
     exit(0);
 }
 
-$attrs['importantEtuInscription'] = importantEtuInscription(getAndUnset($attrs, 'supannEtuInscription'), $primaryAffect, $uid, $etab);
+$attrs['importantEtuInscription'] = importantEtuInscription(getAndUnset($attrs, 'supannEtuInscription'), $uid, $etab);
 
 echoJson($attrs);
 
