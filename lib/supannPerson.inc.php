@@ -197,10 +197,12 @@ function people_filters($token, $restriction, $attrRestrictions, $allowInvalidAc
 
     $l = array();
 
+    if (!is_array($token)) {
     // MIFARE?
     if (preg_match('/^[0-9A-F]{14}$/', $token) || // DESFire
         preg_match('/^[0-9A-F]{8}$/', $token)) { // Classic
         $l[] = "(supannRefId={MIFARE}$token)";
+    }
     }
 
     if ($tokenIsId) {
@@ -1010,20 +1012,20 @@ if (isset($user['supannParrainDN'])) {
   }
   if (isset($user['supannCodePopulation'])) {
     if (isset($wanted_attrs['supannCodePopulation-all']))
-        $user['supannCodePopulation-all'] = array_map(supannCodePopulationAll, $user['supannCodePopulation']);
+        $user['supannCodePopulation-all'] = array_map('supannCodePopulationAll', $user['supannCodePopulation']);
     if (isset($wanted_attrs['supannCodePopulation']))
-        $user['supannCodePopulation'] = toShortnames(array_map(supannCodePopulationAll, $user['supannCodePopulation']));
+        $user['supannCodePopulation'] = toShortnames(array_map('supannCodePopulationAll', $user['supannCodePopulation']));
     else
         unset($user['supannCodePopulation']);
   }
   if (isset($user['supannEmpProfil'])) {
     if (isset($wanted_attrs['supannEmpProfil-all']))
-        $user['supannEmpProfil-all'] = array_map(supannEmpExtProfilAll, $user['supannEmpProfil']);
+        $user['supannEmpProfil-all'] = array_map('supannEmpExtProfilAll', $user['supannEmpProfil']);
     unset($user['supannEmpProfil']);
   }
   if (isset($user['supannExtProfil'])) {
     if (isset($wanted_attrs['supannExtProfil-all']))
-        $user['supannExtProfil-all'] = array_map(supannEmpExtProfilAll, $user['supannExtProfil']);
+        $user['supannExtProfil-all'] = array_map('supannEmpExtProfilAll', $user['supannExtProfil']);
     unset($user['supannExtProfil']);
   }
   if (isset($user['employeeType'])) {

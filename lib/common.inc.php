@@ -367,6 +367,13 @@ function array_filter_($array, $cb) {
     return array_values(array_filter($array, $cb));
 }
 
+function safe_count($array) {
+    return isset($array) ? count($array) : 0;
+}
+function safe_array_map($cb, $array) {
+    return isset($array) ? array_map($cb, $array) : $array;
+}
+
 function getAndUnset(&$a, $prop) {
   if (isset($a[$prop])) {
     $v = $a[$prop];

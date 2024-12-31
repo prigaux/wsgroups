@@ -35,7 +35,7 @@ function echo_vcard($users) {
         $l2 = array_shift($rest);
         preg_match('/^(\d{5}) (.*)/', $l2, $m);
         $middle = $m ? [ $m[2], '', $m[1]] : [ $l2 ];
-        return implode(';', array_map(e, array_merge(['', '', $l1], $middle, $rest)));
+        return implode(';', array_map('e', array_merge(['', '', $l1], $middle, $rest)));
     }
 
     function _to_vcard($user) {
@@ -49,7 +49,7 @@ function echo_vcard($users) {
             'EMAIL_WORK,INTERNET' => e($user['mail']),
             'ADR_WORK' => _formatPostalAddress($user['postalAddress']), // no LABEL otherwise Android displays address twice
             'ORG' => 'Université Paris Panthéon-Sorbonne',
-            'TITLE' => e(array_map(function ($e) { return $e['name']; }, $user['supannActivite-all'])),
+            'TITLE' => e(safe_array_map(function ($e) { return $e['name']; }, $user['supannActivite-all'])),
             'ROLE' => e($user['info']),
             'URL' => $user['labeledURI'],
             'END' => 'VCARD',

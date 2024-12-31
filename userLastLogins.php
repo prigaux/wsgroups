@@ -28,7 +28,7 @@ while ($line = array_shift($lines)) {
 
 }
 # all remaining $lines are "similar login failures"
-$fuzzy_failed = array_map(json_decode, $lines);
+$fuzzy_failed = array_map('json_decode', $lines);
 
 $since = [ $audit_boundary_dates[0] ];
 

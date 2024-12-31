@@ -9,7 +9,7 @@ if (!isPersonMatchingFilter(GET_uid(), $LEVEL1_FILTER) &&
   exit;
 }
 
-$ids = implode(explode(',', GET_ldapFilterSafe("ids")), ' ');
+$ids = implode(' ', explode(',', GET_ldapFilterSafe("ids")));
 $info = GET_ldapFilterSafe_or("info", '*');
 
 exec("ssh wsgroups@marmite.univ-paris1.fr getinfo group '$info' $ids", $lines);

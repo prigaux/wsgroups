@@ -669,7 +669,7 @@ function structureRoles($supannCodeEntite, $with_supannRoleGenerique_all) {
     $r = [];
     foreach ($all as &$user) {
         $weight = _transform_supannRoleEntite_into_supannRoleGenerique($user, $supannCodeEntite, $with_supannRoleGenerique_all);
-        if (count($user['supannRoleGenerique'])) {
+        if (safe_count($user['supannRoleGenerique'])) {
             $r[$weight . ":" . $user['uid']] = $user;
         }
     }
