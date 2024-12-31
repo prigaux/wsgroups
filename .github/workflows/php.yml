@@ -8,6 +8,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - run: sudo apt install php-net-ldap2
+    - run: sudo apt install php-net-ldap2 composer
+    - run: composer install
     - run: touch config/config-auth.inc.php
     - run: php test/run.php

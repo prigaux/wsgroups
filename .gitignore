@@ -1,2 +1,5 @@
 gen/tables.inc.php
 config/config-auth.inc.php
+
+composer.lock
+vendor/

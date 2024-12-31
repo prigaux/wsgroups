@@ -3,6 +3,7 @@
 require_once ('config/config-auth.inc.php');
 require_once ('config/config.inc.php');
 require_once ('lib/MyLdap.inc.php');
+require_once 'vendor/autoload.php';
 
 function GET_ldapFilterSafe($name) {
     return ldap_escape_string($_GET[$name]);
@@ -194,10 +195,11 @@ function initPhpCAS_raw($host, $port, $context, $CA_certificate_file) {
 }
 
 function initPhpCAS() {
-  if (class_exists('phpCAS')) return;
-  require_once 'CAS.php';
-  global $CAS_HOST, $CAS_CONTEXT, $CA_certificate_file;
-  initPhpCAS_raw($CAS_HOST, '443', $CAS_CONTEXT, $CA_certificate_file);
+  global $CAS_HOST, $CAS_CONTEXT, $CA_certificate_file, $CAS_init_done;
+  if (!$CAS_init_done) {
+    initPhpCAS_raw($CAS_HOST, '443', $CAS_CONTEXT, $CA_certificate_file);
+    $CAS_init_done = true;
+  }
 }
 
 function forceCASAuthentication() {
