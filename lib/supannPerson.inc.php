@@ -144,9 +144,12 @@ function people_attrs($attrs, $allowExtendedInfo = 0) {
         $wanted_attrs[$USER_KEY_FIELD] = $USER_KEY_FIELD;
 
     // employeeType* is only allowed on some eduPersonPrimaryAffiliation
+    // employeeType* influe sur l'affiliation pour les "Personnel en activité ponctuelle"
     // departmentNumber is only useful for some eduPersonPrimaryAffiliation
-    if (isset($wanted_attrs['employeeType']) || isset($wanted_attrs['employeeType-all']) || isset($wanted_attrs['departmentNumber']))
+    if (isset($wanted_attrs['employeeType']) || isset($wanted_attrs['employeeType-all']) || isset($wanted_attrs['departmentNumber'])) {
         $wanted_attrs['eduPersonPrimaryAffiliation'] = 'eduPersonPrimaryAffiliation';
+        $wanted_attrs['eduPersonAffiliation'] = 'MULTI';
+    }
     // gendered employeeType depends on supannCivilite & supannConsentement
     if (isset($wanted_attrs['employeeType'])) {
         $wanted_attrs['supannCivilite'] = 'supannCivilite';
