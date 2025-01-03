@@ -28,6 +28,7 @@ function parse_attrs_text(l) {
 
 var main_attrs_labels = [ [
     'Person: Personne',
+    'Role: Nom',
 
     'eduPersonAffiliation: Statut(s)',
     'businessCategory: Catégorie',
@@ -42,7 +43,8 @@ var main_attrs_labels = [ [
     "supannActivite-various: supannActivite-various", 
     //'departmentNumber: Discipline(s)', // redundant
 
-    'description: Activité<br><small>(choisi dans Mon Compte Paris 1)</small>',
+    'Activite_champ_libre: Activité<br><small>(choisi dans Mon Compte Paris 1)</small>',
+    'description: Description',
     "info: Domaine d'activité ou Spécialité<br><small>(saisie libre dans Mon Compte Paris 1)</small>",
 
     'supannEntiteAffectation-all: Structure(s)/Composante(s)',
@@ -1060,7 +1062,7 @@ function compute_Account_and_accountStatus(info, fInfo) {
         fInfo.accountStatus.append(get_lastLogins(info));
         fInfo.accountStatus.append(get_lastLoginsOTP(info));
     }
-    if (info.allowExtendedInfo >= 2)
+    if (info.allowExtendedInfo >= 2 && !info.isRole)
         fInfo.accountStatus.append(", ").append($("<a>", { target: '_blank', href: "https://esup-otp-manager.univ-paris1.fr/login?user=" + info.uid }).text("méthodes OTP"))
 
     if (fInfo.shadowFlag) {
@@ -1191,6 +1193,12 @@ function format_link(link) {
     return a_or_span(link, link);
 }
 
+function get_delete(o, key) {
+    const val = o[key]
+    delete o[key]
+    return val
+}
+
 function formatUserInfo(info, showExtendedInfo) {
     //if (info.roomNumber) info.postalAddress = info.roomNumber + ", " + info.postalAddress;
 
@@ -1214,8 +1222,13 @@ function formatUserInfo(info, showExtendedInfo) {
 	fInfo.OtherIdentifiers = compute_Identifiers(info);
 	fInfo.cartes_multi_service = format_cartes_multi_service([ ...info.supannCMSAffectation || [], ...info.supannCMSAppAffectation || [] ])
 
-    
-    fInfo.Person = compute_Person(info);
+    if (info.isRole) {
+        fInfo.Role = compute_Person(info);
+    } else {
+        fInfo.Person = compute_Person(info);
+        fInfo.Activite_champ_libre = info.description && spanFromList(info.description, ", ")
+        fInfo.description = null
+    }
     if (info['supannEtuInscription-all']) format_supannEtuInscriptionAll(info['supannEtuInscription-all'], fInfo);
     if (info['supannActivite-all']) format_supannActivite(info['supannActivite-all'], fInfo);
 	// if we have up1BirthDay, we have full power
