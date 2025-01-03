@@ -417,8 +417,8 @@ function searchPeopleRaw($filter, $allowListeRouge, $allowRoles, $wanted_attrs, 
 function wanted_attrs_raw($wanted_attrs) {
     $r = array();
     foreach ($wanted_attrs as $attr => $v) {
-	$attr_raw = preg_replace('/-.*/', '', $attr);
-	$r[$attr_raw] = preg_replace('/-.*/', '', $v);
+	$attr_raw = preg_replace('/^([^;]*)-[^;]*/', '$1', $attr);
+	$r[$attr_raw] = preg_replace('/^([^;]*)-[^;]*/', '$1', $v);
     }
     return $r;
 }
