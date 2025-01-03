@@ -567,7 +567,7 @@ function format_memberOf(all) {
     all = all.sort(compareLowerCased("key"));
     var moreInfo = get_groupsMoreInfo(all);
     return spanFromList($.map(all, function (e) {
-	    var span = $("<span>").append(a_or_span(e.name && e.name.match(/:/) && toGrouperUrl(e.key), e.key))
+	    var span = $("<span>").append(a_or_span('#groups-' + e.key, e.key))
                 .appendText(" : " + (e.description || ''));
         if (moreInfo[e.key]) span.append(moreInfo[e.key]);
         return span;
@@ -1124,7 +1124,7 @@ function format_members(val) {
     return spanFromList($.map(val, function (member) {
         var match_cn = member.key.match(/^cn=(.*?),ou=groups/);
         var a = match_cn ?
-                    a_or_span(member.name && member.name.match(/:/) && toGrouperUrl(match_cn[1]), match_cn[1]) :
+                    a_or_span('#groups-' + encodeURIComponent(match_cn[1]), match_cn[1]) :
                     a_or_span('#' + encodeURIComponent(dn2uid(member.key)), member.name);
         return $("<span>").append(a).appendText(member.description ? " (" + member.description + ")" : '');
     }), "<br>");
