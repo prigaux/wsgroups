@@ -1124,6 +1124,7 @@ function format_cartes_multi_service(l) {
 
 function format_members(val) {
     return spanFromList($.map(val, function (member) {
+        if (!member) return null
         var match_cn = member.key.match(/^cn=(.*?),ou=groups/);
         var a = match_cn ?
                     a_or_span('#groups-' + encodeURIComponent(match_cn[1]), match_cn[1]) :
@@ -1133,8 +1134,8 @@ function format_members(val) {
 }
 
 function format_members_not_admin(val, info) {
-    var admins = (info['supannGroupeAdminDN-all'] || []).map(member => member.key)
-    var val_ = val.filter(member => !admins.includes(member.key))
+    var admins = (info['supannGroupeAdminDN-all'] || []).map(member => member?.key)
+    var val_ = val.filter(member => !admins.includes(member?.key))
     return format_members(val_)
 }
 
